@@ -520,20 +520,23 @@ class StoryFrame(wx.Frame):
         dialog = wx.FileDialog(self, 'Export Source Code', os.getcwd(), "", \
                                'Twee File (*.twee;* .tw; *.txt)|*.twee;*.tw;*.txt|All Files (*.*)|*.*', wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT | wx.FD_CHANGE_DIR)
         if dialog.ShowModal() == wx.ID_OK:
-            try:
-                path = dialog.GetPath()
-                tw = TiddlyWiki()
-
-                for widget in self.storyPanel.widgets: tw.addTiddler(widget.passage)
-                dest = codecs.open(path, 'w', 'utf-8-sig', 'replace')
-                order = map(lambda w: w.passage.title, self.storyPanel.sortedWidgets())
-                dest.write(tw.toTwee(order))
-                dest.close()
-            except:
-                self.app.displayError('exporting your source code')
+            self.exportSourceToPath(dialog.GetPath())
 
         dialog.Destroy()
+		
+    def exportSourceToPath(self, path):
+        """Exports to source to the given path."""
+        try:
+            tw = TiddlyWiki()
 
+            for widget in self.storyPanel.widgets: tw.addTiddler(widget.passage)
+            dest = codecs.open(path, 'w', 'utf-8-sig', 'replace')
+            order = map(lambda w: w.passage.title, self.storyPanel.sortedWidgets())
+            dest.write(tw.toTwee(order))
+            dest.close()
+        except:
+            self.app.displayError('exporting your source code')
+	
     def importHtmlDialog(self, event = None):
         """Asks the user to choose a file to import HTML tiddlers from, then imports into the current story."""
         dialog = wx.FileDialog(self, 'Import From Compiled HTML', os.getcwd(), '', \
@@ -800,6 +803,11 @@ You can also include URLs of .tws and .twee files, too.
             pickle.dump(self.serialize(), dest)
             dest.close()
             self.setDirty(False)
+            """TODO: add preference for saving to source by default"""
+            try:
+                self.exportSourceToPath(self.saveDestination+'.tw')
+            except:
+                self.app.displayError('saving story source')
             self.app.config.Write('LastFile', self.saveDestination)
         except:
             self.app.displayError('saving your story')
