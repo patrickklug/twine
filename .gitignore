@@ -5,3 +5,7 @@
 /dist
 /build/vcredist_x86.exe
 /targets/**/*.pyc
+appicons/Thumbs.db
+icons/Thumbs.db
+icons/small/Thumbs.db
+log.txt

@@ -648,7 +648,8 @@ class PassageWidget:
                 gc.SetTextForeground(titleTextColor)
 
             if self.passage.title:
-                gc.DrawText(self.passage.title, inset, inset)
+                #add word count to title and draw
+                gc.DrawText('['+ str(len(self.passage.text.split(None)))+'] ' + self.passage.title, inset, inset)
 
             # draw excerpt
 
