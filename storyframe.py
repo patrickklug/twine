@@ -793,6 +793,12 @@ You can also include URLs of .tws and .twee files, too.
 
         editingWidget.openEditor()
 
+    def saveSource(self):
+        try:
+            self.exportSourceToPath(self.saveDestination+'.tw')
+        except:
+            self.app.displayError('saving story source')
+    
     def save(self, event = None):
         if (self.saveDestination == ''):
             self.saveAs()
@@ -803,11 +809,7 @@ You can also include URLs of .tws and .twee files, too.
             pickle.dump(self.serialize(), dest)
             dest.close()
             self.setDirty(False)
-            """TODO: add preference for saving to source by default"""
-            try:
-                self.exportSourceToPath(self.saveDestination+'.tw')
-            except:
-                self.app.displayError('saving story source')
+            self.saveSource()
             self.app.config.Write('LastFile', self.saveDestination)
         except:
             self.app.displayError('saving your story')
