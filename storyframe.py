@@ -529,7 +529,12 @@ class StoryFrame(wx.Frame):
         try:
             tw = TiddlyWiki()
 
-            for widget in self.storyPanel.widgets: tw.addTiddler(widget.passage)
+            for widget in self.storyPanel.widgets:
+                #export current coordinates in tags
+                widget.passage.tags.append('x:'+str(widget.pos[0]))
+                widget.passage.tags.append('y:'+str(widget.pos[1]))
+                #addTiddler
+                tw.addTiddler(widget.passage)
             dest = codecs.open(path, 'w', 'utf-8-sig', 'replace')
             order = map(lambda w: w.passage.title, self.storyPanel.sortedWidgets())
             dest.write(tw.toTwee(order))
@@ -557,6 +562,21 @@ class StoryFrame(wx.Frame):
         if dialog.ShowModal() == wx.ID_OK:
             self.importSource(dialog.GetPath())
 
+    def setPosFromTags(self, tiddler):
+        tags = tiddler.tags
+        pos=[]
+        newTags=[]
+        for tag in tags:
+            if (tag.find('x:')!=-1):
+                pos.append(float(tag[2:]))
+            elif (tag.find('y:')!=-1):
+                pos.append(float(tag[2:]))
+            else:
+                newTags.append(tag)
+        tiddler.tags=newTags
+        if (len(pos)==2):
+            tiddler.pos=pos
+    
     def importSource(self, path, html = False):
         """Imports the tiddler objects in a Twee file into the story."""
 
@@ -603,6 +623,7 @@ class StoryFrame(wx.Frame):
                     t = tw.tiddlers[t]
                     if t.title in skippedTitles:
                         continue
+                    self.setPosFromTags(t)
                     new = self.storyPanel.newWidget(title = t.title, tags = t.tags, text = t.text, quietly = True,
                                                     pos = t.pos if t.pos else lastpos)
                     lastpos = new.pos
