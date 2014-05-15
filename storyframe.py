@@ -530,9 +530,9 @@ class StoryFrame(wx.Frame):
             tw = TiddlyWiki()
 
             for widget in self.storyPanel.widgets:
-                #export current coordinates in tags
-                widget.passage.tags.append('x:'+str(widget.pos[0]))
-                widget.passage.tags.append('y:'+str(widget.pos[1]))
+                #set current coordinates so that it will be exported in tags
+                widget.passage.x = widget.pos[0]
+                widget.passage.y = widget.pos[1]
                 #addTiddler
                 tw.addTiddler(widget.passage)
             dest = codecs.open(path, 'w', 'utf-8-sig', 'replace')
