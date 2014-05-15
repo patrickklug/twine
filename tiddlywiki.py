@@ -493,14 +493,11 @@ class Tiddler:
     def toTwee(self):
         """Returns a Twee representation of this tiddler."""
         output = u':: ' + self.title
-        
-        if (len(self.tags) > 0 or hasattr(self,'x')):
+
+        if len(self.tags) > 0:
             output += u' ['
             for tag in self.tags:
                 output += tag + ' '
-            if (hasattr(self,'x')):
-                #export coordinates
-                output += 'x:'+str(self.x)+' '+'y:'+ str(self.y)+' '
             output = output.strip()
             output += u']'
 
