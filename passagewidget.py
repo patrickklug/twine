@@ -648,8 +648,12 @@ class PassageWidget:
                 gc.SetTextForeground(titleTextColor)
 
             if self.passage.title:
+                #add a * if node contains comments
+                #TODO: use tweeregex.COMMENT_REGEX instead of simple search
+                hasComments = self.passage.text.find('/%')!=-1
+                title = '*' if hasComments else ''
                 #add word count to title and draw
-                gc.DrawText('['+ str(len(self.passage.text.split(None)))+'] ' + self.passage.title, inset, inset)
+                gc.DrawText(title + '['+ str(len(self.passage.text.split(None)))+'] ' + self.passage.title, inset, inset)
 
             # draw excerpt
 
